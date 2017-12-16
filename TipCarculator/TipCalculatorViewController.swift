@@ -22,30 +22,33 @@ class TipCalculatorViewController: UIViewController, UITextFieldDelegate {
 
     
     // MARK: - Properties
-    var tipCalc = TipCalc(amountBeforeTax: 25.00, tipPercentage: 0.2)
+    var tipCalc = TipCalc(amountBeforeTax: 25.0 , tipPercentage: 20)
     
     // MARK: - View Controller Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
         amountBeforeTaxTextField.text = String(format: "%0.2f", arguments: [tipCalc.amountBeforeTax])
-        tipPercentageLabel.text = String(format: "Tip %d%%:", arguments: [Int(tipCalc.tipPercentage * 100)])
+        tipPercentageLabel.text = String(format: "Tip %d:", arguments: [Int(tipCalc.tipPercentage)])
+        calcTip()
     }
     
     func calcTip()
     {
-        tipCalc.tipPercentage = Float(tipPercentageSlider.value)
-        tipCalc.amountBeforeTax = ((amountBeforeTaxTextField.text) as NSString).floatValue
-        tipCalc.calculateTip()
+        guard let safeAmount = amountBeforeTaxTextField.text else{
+            return
+        }
+        if let amount = Float(safeAmount){
+        tipCalc = TipCalc(amountBeforeTax: amount  , tipPercentage: Float(tipPercentageSlider.value/100))
         updateUI()
+        }
     }
     
     func updateUI()
     {
-        resultLabel.text = String(format: "Total: $%0.2f Tip: $%0.2f", argument: [tipCalc.totalAmount, tipCalc.tipAmount])
+        let billAmount = tipCalc.calculateTip()
+        resultLabel.text = String(format: "Total : $%.2f  Tip : $%.2f", billAmount, tipCalc.tipAmount)
     }
-    
-    // MARK: - UIConrol     Events
     
     @IBAction func amountBeforeTaxTexFieldChanged(_ sender: Any)
     {
@@ -57,41 +60,16 @@ class TipCalculatorViewController: UIViewController, UITextFieldDelegate {
             textField.resignFirstResponder()
             calcTip()
         }
-
         return true
     }
-
+    
+    @IBAction func tipSliderChanged(_ sender: UISlider!) {
+        tipPercentageLabel.text = "Tip \(UInt(sender.value))%:"
+        calcTip()
+        updateUI()
+    }
+    
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

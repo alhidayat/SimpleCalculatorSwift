@@ -21,9 +21,10 @@ class TipCalc
         self.tipPercentage = tipPercentage
     }
     
-    public func calculateTip()
+    public func calculateTip() -> Float
     {
         tipAmount = amountBeforeTax * tipPercentage
-        totalAmount = totalAmount + amountBeforeTax
+        totalAmount = amountBeforeTax + tipAmount
+        return totalAmount
     }
 }
